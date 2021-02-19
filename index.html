@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js\jquery-3.5.1.min.js"></script>
     <title>Guess Who??</title>
 </head>
 
@@ -13,11 +14,13 @@
     <div class="mine">
         <div class="card" id="card-1">
             <div class="card-container">
-                <div class="gambar">
-                    <img src="gambar/flower.png" alt="" />
-                </div>
-                <div class="name">
-                    <ul>Guess Who??</ul>
+                <div class="card-front">
+                    <div class="gambar">
+                        <img src="gambar/flower.png" alt="" />
+                    </div>
+                    <div class="name">
+                        <ul>Guess Who??</ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -542,9 +545,39 @@
     
     <script>
         $(document).ready(function() {
+
+            var cardSwitch = null;
+
             $('.card').click(function() {
-                const cardId = this.id;
-                $(`#${cardId} .card-container`).css("transform","rotateY(180deg)");
+                let cardId = this.id;
+                if(cardId === 'card-1') {
+                    let cardSrc = $(`#${cardId} .card-front img`).attr('src');
+                    let cardHtml = $(`#${cardId} ul`).html();
+                    cardSwitch = {
+                        id: cardId,
+                        src: cardSrc,
+                        html: cardHtml,
+                    }
+                    $(`#${cardId}`).css("transform","scale(1.1, 1.1)");
+                    console.log(cardSwitch);
+                } else {
+                    if(cardSwitch) {
+                        let cardSrc = $(`#${cardId} .card-front img`).attr('src');
+                        let cardHtml = $(`#${cardId} ul`).html();
+
+                        $(`#${cardSwitch.id} .card-front img`).attr('src', cardSrc);
+                        $(`#${cardId} .card-front img`).attr('src', cardSwitch.src);
+
+                        $(`#${cardSwitch.id} ul`).html(cardHtml);
+                        $(`#${cardId} ul`).html(cardSwitch.html);
+
+                        $(`#${cardId} .card-container`).removeClass('active');
+                        $(`#${cardSwitch.id}`).css("transform","unset");
+                        cardSwitch = null;
+                    } else {
+                        $(`#${cardId} .card-container`).toggleClass('active');
+                    }
+                }
             })
         })
     </script>
